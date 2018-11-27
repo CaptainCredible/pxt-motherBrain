@@ -57,13 +57,14 @@ namespace motherBrain {
         radio.setGroup(83)
         let soloingState = false
         let musSelect = 0
-        input.onScreenUp(function () {
+        
+        input.onLogoUp(function () {
             soloingState = true
             soloAMusician(musSelect)
             basic.showNumber(musSelect, 100)
         })
 
-        input.onLogoUp(function () {
+        input.onScreenUp(function () {
             soloingState = false
             unMuteAllMusicians()
             basic.showLeds(`
