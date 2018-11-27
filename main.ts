@@ -57,7 +57,7 @@ namespace motherBrain {
         radio.setGroup(83)
         let soloingState = false
         let musSelect = 0
-        
+
         input.onLogoUp(function () {
             soloingState = true
             soloAMusician(musSelect)
@@ -146,11 +146,15 @@ namespace motherBrain {
             radio.sendValue("m", mutes)
         }
         pins.onPulsed(DigitalPin.P0, PulseValue.High, function () {
-            //led.toggleAll()
-            led.toggle(1, 0)
-            led.toggle(3, 0)
-            led.toggle(1, 1)
-            led.toggle(3, 1)
+            if (!soloingState) {
+                led.toggle(1, 0)
+                led.toggle(3, 0)
+                led.toggle(1, 1)
+                led.toggle(3, 1)
+            } else {
+                led.toggle(4, 4)
+            }
+
             let dataBuffer = pins.i2cReadBuffer(8, (numberOfTracks + 2) * 2, false)
             for (let tracksBufferFillIndex = 0; tracksBufferFillIndex <= numberOfTracks - 1; tracksBufferFillIndex++) {
                 tracksBuffer[tracksBufferFillIndex] = dataBuffer.getNumber(NumberFormat.UInt16LE, tracksBufferFillIndex * 2)
