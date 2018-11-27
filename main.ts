@@ -185,7 +185,7 @@ namespace motherBrain {
      */
     //% blockID="changeName" block="change name number $nameNumber| to $newName"
     export function changeName(nameNumber: number, newName: string) {
-        altTargetNames[nameNumber] = newName
+        altTargetNames[nameNumber] = newName + "P"
     }
 
     /**
@@ -277,7 +277,7 @@ namespace motherBrain {
 * @param value describe value here, eg: 5
 */
     //% blockID="alwaysUseAltNames" block="allways use alternate names"
-    export function alwaysUseAltNames(subD: number) {
+    export function alwaysUseAltNames() {
         allowNameSwitch = true
     }
 }
