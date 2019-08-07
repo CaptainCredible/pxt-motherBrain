@@ -1,6 +1,7 @@
 # pxt-motherbrain
 
 This repository is for setting up a microbit to function with the "motherbrain" controller/conductor for the micro:bit orchestra:
+
 ![](motherbrain.jpg)
 
 The code works in conjuntion with an atmega32u4 programmed with this code:
