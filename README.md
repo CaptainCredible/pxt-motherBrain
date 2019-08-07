@@ -1,5 +1,14 @@
 # pxt-motherbrain
 
+This repository is for setting up a microbit to function with the "motherbrain" controller/conductor for the micro:bit orchestra:
+![](motherbrain.jpg)
+
+The code works in conjuntion with an atmega32u4 programmed with this code:
+https://github.com/CaptainCredible/MotherBrain
+
+The micro:bit receives a pulse on one of the pins that serves as an interrupt to cause it to request data from the AVR via i2c ( this is because the micro:bit can't be set up as an i2c slave ). The AVR sends data to the micro:bit wich simply reformats it and conveys it via radio messages to the orchestra.
+
+
 
 
 ## TODO
@@ -14,7 +23,7 @@
 Read more at https://makecode.microbit.org/packages/build-your-own
 
 ## License
-
+MIT
 
 
 ## Supported targets
