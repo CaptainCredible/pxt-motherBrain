@@ -72,7 +72,7 @@ namespace motherBrain {
     . . # . .
     . . # . .
     . . # . .
-    . . # . .
+    . # # # .
     `, 0)
             if (muteThumpers) {
                 led.plot(4, 4)
@@ -161,8 +161,10 @@ namespace motherBrain {
             }
             currentStep = dataBuffer.getNumber(NumberFormat.Int16LE, 16)
             mutes = dataBuffer.getNumber(NumberFormat.Int16LE, 18)
+            let detect = false
             for (let sendIndex = 0; sendIndex <= numberOfTracks - 1; sendIndex++) {
                 if (tracksBuffer[sendIndex] > 0) {
+                    detect = true
                     if (!allowNameSwitch) {
                         radio.sendValue(targetNames[sendIndex], tracksBuffer[sendIndex])
                     } else {
@@ -170,6 +172,9 @@ namespace motherBrain {
                     }
 
                 }
+            }
+            if(detect){
+                led.toggleAll()
             }
             sendMutes()
             if (sendClock) {
