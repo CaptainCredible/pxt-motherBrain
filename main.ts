@@ -30,6 +30,9 @@ let mutes = 0
 let step2send = 0
 let subDiv = 2
 let allowNameSwitch = false
+let soloingState = false
+let musSelect = 0
+let oldSoloingState = false;
 /**
  * Custom blocks
  */
@@ -48,44 +51,17 @@ namespace motherBrain {
     . . # . .
     . . # . .
     . . # . .
-    . . # . .
+    . # # # .
     `)
         led.toggle(1, 0)
         led.toggle(3, 0)
         led.toggle(1, 1)
         led.toggle(3, 1)
         radio.setGroup(83)
-        let soloingState = false
-        let musSelect = 0
 
-        input.onLogoUp(function () {
-            soloingState = true
-            soloAMusician(musSelect)
-            basic.showNumber(musSelect, 100)
-        })
 
-        input.onScreenUp(function () {
-            soloingState = false
-            unMuteAllMusicians()
-            basic.showLeds(`
-    . . # . .
-    . . # . .
-    . . # . .
-    . . # . .
-    . # # # .
-    `, 0)
-            if (muteThumpers) {
-                led.plot(4, 4)
-            }
-            if (allowNameSwitch) {
-                led.plot(0, 4)
-            }
-        })
+        input.onButtonPressed(Button.AB, function () {
 
-        input.onScreenDown(function () {
-            soloingState = false
-            muteAllMusicians()
-            basic.showIcon(IconNames.No, 100)
         })
 
         input.onButtonPressed(Button.A, function () {
@@ -113,6 +89,27 @@ namespace motherBrain {
 
         })
         input.onButtonPressed(Button.AB, function () {
+            soloingState = !soloingState
+            if (soloingState) {
+                soloAMusician(musSelect)
+                basic.showNumber(musSelect, 100)
+            }
+            if (!soloingState) {
+                unMuteAllMusicians()
+                basic.showLeds(`
+    . . # . .
+    . . # . .
+    . . # . .
+    . . # . .
+    . # # # .
+    `, 0)
+                if (muteThumpers) {
+                    led.plot(4, 4)
+                }
+                if (allowNameSwitch) {
+                    led.plot(0, 4)
+                }
+            }
 
         })
 
@@ -146,15 +143,6 @@ namespace motherBrain {
             radio.sendValue("m", mutes)
         }
         pins.onPulsed(DigitalPin.P0, PulseValue.High, function () {
-            if (!soloingState) {
-                led.toggle(1, 0)
-                led.toggle(3, 0)
-                led.toggle(1, 1)
-                led.toggle(3, 1)
-            } else {
-                led.toggle(4, 4)
-            }
-
             let dataBuffer = pins.i2cReadBuffer(8, (numberOfTracks + 2) * 2, false)
             for (let tracksBufferFillIndex = 0; tracksBufferFillIndex <= numberOfTracks - 1; tracksBufferFillIndex++) {
                 tracksBuffer[tracksBufferFillIndex] = dataBuffer.getNumber(NumberFormat.UInt16LE, tracksBufferFillIndex * 2)
@@ -173,8 +161,15 @@ namespace motherBrain {
 
                 }
             }
-            if(detect){
-                led.toggleAll()
+            if (detect) {
+                if (!soloingState) {
+                    led.toggle(1, 0)
+                    led.toggle(3, 0)
+                    led.toggle(1, 1)
+                    led.toggle(3, 1)
+                } else {
+                    led.toggle(4, 4)
+                }
             }
             sendMutes()
             if (sendClock) {
@@ -186,6 +181,43 @@ namespace motherBrain {
             }
         })
 
+    }
+
+    /**
+ * TODO: describe your function here
+ * @param value describe value here, eg: 5
+ */
+    //% blockID="enable accelerometer mutes" block="accellerometerMute"
+    export function accelMute() {
+        input.onLogoUp(function () {
+            soloingState = true
+            soloAMusician(musSelect)
+            basic.showNumber(musSelect, 100)
+        })
+
+        input.onScreenUp(function () {
+            soloingState = false
+            unMuteAllMusicians()
+            basic.showLeds(`
+    . . # . .
+    . . # . .
+    . . # . .
+    . . # . .
+    . # # # .
+    `, 0)
+            if (muteThumpers) {
+                led.plot(4, 4)
+            }
+            if (allowNameSwitch) {
+                led.plot(0, 4)
+            }
+        })
+
+        input.onScreenDown(function () {
+            soloingState = false
+            muteAllMusicians()
+            basic.showIcon(IconNames.No, 100)
+        })
     }
 
 
