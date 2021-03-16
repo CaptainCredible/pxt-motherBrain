@@ -58,6 +58,7 @@ namespace motherBrain {
         led.toggle(1, 1)
         led.toggle(3, 1)
         radio.setGroup(83)
+        radio.setTransmitPower(7)
 
 
         input.onButtonPressed(Button.AB, function () {
