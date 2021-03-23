@@ -115,26 +115,36 @@ namespace motherBrain {
         })
 
         function serialDebug() {
+            /*
             for (let serialDebugIndex = 0; serialDebugIndex <= numberOfTracks - 1; serialDebugIndex++) {
                 serial.writeValue(targetNames[serialDebugIndex], tracksBuffer[serialDebugIndex])
             }
+            */
         }
 
         function sendClockTick() {
-            if (step2send != Math.trunc(currentStep / subDiv)) {
-                radio.setGroup(84)
-                step2send = Math.trunc(currentStep / subDiv)
-                radio.sendValue("t", step2send)
-                radio.setGroup(83)
+            if(currentStep != 200){
+                if (step2send != Math.trunc(currentStep / subDiv)) {
+                
+                    radio.setGroup(84)
+                    step2send = Math.trunc(currentStep / subDiv)
+                    radio.sendValue("t", step2send)
+                    radio.setGroup(83)
+                
+                
+                }
             }
         }
-        /*
+/*
+        
         function sendClockTick() {
             radio.setGroup(84)
             radio.sendValue("t", currentStep)
+            serial.writeValue("step", currentStep)
             radio.setGroup(83)
         }
-        */
+*/        
+        
         function sendMutes() {
             if (muteThumpers) {
                 mutes = mutes | 0b100000000
@@ -148,7 +158,7 @@ namespace motherBrain {
             for (let tracksBufferFillIndex = 0; tracksBufferFillIndex <= numberOfTracks - 1; tracksBufferFillIndex++) {
                 tracksBuffer[tracksBufferFillIndex] = dataBuffer.getNumber(NumberFormat.UInt16LE, tracksBufferFillIndex * 2)
             }
-            currentStep = dataBuffer.getNumber(NumberFormat.Int16LE, 16)
+           currentStep = dataBuffer.getNumber(NumberFormat.Int16LE, 16)
             mutes = dataBuffer.getNumber(NumberFormat.Int16LE, 18)
             let detect = false
             for (let sendIndex = 0; sendIndex <= numberOfTracks - 1; sendIndex++) {
