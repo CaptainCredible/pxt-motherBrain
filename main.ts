@@ -198,37 +198,35 @@ namespace motherBrain {
  * TODO: describe your function here
  * @param value describe value here, eg: 5
  */
-    //% blockID="enable accelerometer mutes" block="accellerometerMute"
+    //% blockID="enable touch mutes" block="touchMute"
     export function accelMute() {
-        input.onLogoUp(function () {
-            soloingState = true
-            soloAMusician(musSelect)
-            basic.showNumber(musSelect, 100)
-        })
-
-        input.onScreenUp(function () {
-            soloingState = false
-            unMuteAllMusicians()
-            basic.showLeds(`
+        
+        input.onLogoEvent(TouchButtonEvent.Pressed, function() {
+            soloingState = !soloingState
+            if(soloingState){
+                soloAMusician(musSelect)
+                basic.showNumber(musSelect, 100)
+            } else {
+                soloingState = false
+                unMuteAllMusicians()
+                basic.showLeds(`
     . . # . .
     . . # . .
     . . # . .
     . . # . .
     . # # # .
     `, 0)
-            if (muteThumpers) {
-                led.plot(4, 4)
-            }
-            if (allowNameSwitch) {
-                led.plot(0, 4)
+                if (muteThumpers) {
+                    led.plot(4, 4)
+                }
+                if (allowNameSwitch) {
+                    led.plot(0, 4)
+                }
             }
         })
+        
 
-        input.onScreenDown(function () {
-            soloingState = false
-            muteAllMusicians()
-            basic.showIcon(IconNames.No, 100)
-        })
+        
     }
 
 
