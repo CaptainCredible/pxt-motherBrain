@@ -278,11 +278,11 @@ namespace motherBrain {
     //% blockID="unMuteAllMusicians" block="unmute all musicians"
     export function unMuteAllMusicians() {
         radio.setGroup(84)
-        radio.sendString("uma")
+        radio.sendValue("uma",1337)
         basic.pause(10)
-        radio.sendString("uma")
+        radio.sendValue("uma", 1337)
         basic.pause(10)
-        radio.sendString("uma")
+        radio.sendValue("uma", 1337)
         radio.setGroup(83)
     }
 
