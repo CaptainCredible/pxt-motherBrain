@@ -4,6 +4,7 @@
 *moved some stuff around
  */
 //
+let radioSlowDown = 0
 let trackReceived = 0
 let column = 0
 let row = 0
@@ -47,11 +48,11 @@ namespace motherBrain {
     //%blockId="makeMotherBrain" block="motherBrain"
     export function makeMotherBrain() {
         basic.showLeds(`
-    . . # . .
-    . . # . .
-    . . # . .
-    . . # . .
+    # . # . #
     . # # # .
+    . . # . .
+    . . # . .
+    . . # . .
     `)
         led.toggle(1, 0)
         led.toggle(3, 0)
@@ -161,14 +162,24 @@ namespace motherBrain {
            currentStep = dataBuffer.getNumber(NumberFormat.Int16LE, 16)
             mutes = dataBuffer.getNumber(NumberFormat.Int16LE, 18)
             let detect = false
+            let originalSendIndex = [0,1,2,3,4,5,6,7];
+            let remapSendIndex = [7,4,6,0,1,2,3,5]; // send to receivers that are probably running synth code first
+
             for (let sendIndex = 0; sendIndex <= numberOfTracks - 1; sendIndex++) {
-                if (tracksBuffer[sendIndex] > 0) {
+                if (tracksBuffer[remapSendIndex[sendIndex]] > 0) {
                     detect = true
-                    if (!allowNameSwitch) {
-                        radio.sendValue(targetNames[sendIndex], tracksBuffer[sendIndex])
-                    } else {
-                        radio.sendValue(altTargetNames[sendIndex], tracksBuffer[sendIndex])
+                    if (radioSlowDown > 0) {
+                        control.waitMicros(radioSlowDown); // ATTEMPT TO SLOW DOWN RADIO MESSAGES
                     }
+                    if (!allowNameSwitch) {
+                        radio.sendValue(targetNames[remapSendIndex[sendIndex]], tracksBuffer[remapSendIndex[sendIndex]])
+                    } else {
+                        radio.sendValue(altTargetNames[remapSendIndex[sendIndex]], tracksBuffer[remapSendIndex[sendIndex]])
+                    }
+                    if(radioSlowDown > 0){
+                        control.waitMicros(radioSlowDown); // ATTEMPT TO SLOW DOWN RADIO MESSAGES
+                    }
+                    
 
                 }
             }
@@ -237,6 +248,15 @@ namespace motherBrain {
     //% blockID="changeName" block="change name number $nameNumber| to $newName"
     export function changeName(nameNumber: number, newName: string) {
         altTargetNames[nameNumber] = newName + "P"
+    }
+
+    /**
+     * TODO: describe your function here
+     * @param value describe value here, eg: 5
+     */
+    //% blockID="slowDownRadioMessages" block="slow down messages by $delayAmount"
+    export function slowDownRadio(delayAmount: number) {
+        radioSlowDown = delayAmount;
     }
 
     /**
