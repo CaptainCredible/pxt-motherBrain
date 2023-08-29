@@ -337,7 +337,7 @@ namespace motherBrain {
     * TODO: describe your function here
     * @param value describe value here, eg: 5
     */
-    //% blockID="setSubdivTo" block="set clock subdivision to"
+    //% blockID="setSubdivTo" block="set clock subdivision to $subD "
     export function setSubdivTo(subD: number) {
         subDiv = subD
         subDiv = Math.constrain(subDiv, 1, 8)
