@@ -4,6 +4,7 @@
 *moved some stuff around
  */
 //
+let interruptPin = DigitalPin.P0
 let radioSlowDown = 0
 let trackReceived = 0
 let column = 0
@@ -51,7 +52,7 @@ namespace motherBrain {
     # . # . #
     . # # # .
     . . # . .
-    . . # . .
+    . # # # .
     . . # . .
     `)
         led.toggle(1, 0)
@@ -60,11 +61,6 @@ namespace motherBrain {
         led.toggle(3, 1)
         radio.setGroup(83)
         radio.setTransmitPower(7)
-
-
-        input.onButtonPressed(Button.AB, function () {
-
-        })
 
         input.onButtonPressed(Button.A, function () {
             if (soloingState) {
@@ -131,8 +127,6 @@ namespace motherBrain {
                     step2send = Math.trunc(currentStep / subDiv)
                     radio.sendValue("t", step2send)
                     radio.setGroup(83)
-                
-                
                 }
             }
         }
@@ -154,8 +148,10 @@ namespace motherBrain {
             }
             radio.sendValue("m", mutes)
         }
-        pins.onPulsed(DigitalPin.P0, PulseValue.High, function () {
+
+        pins.onPulsed(interruptPin, PulseValue.High, function () {
             let dataBuffer = pins.i2cReadBuffer(8, (numberOfTracks + 2) * 2, false)
+            led.toggle(2,2)
             for (let tracksBufferFillIndex = 0; tracksBufferFillIndex <= numberOfTracks - 1; tracksBufferFillIndex++) {
                 tracksBuffer[tracksBufferFillIndex] = dataBuffer.getNumber(NumberFormat.UInt16LE, tracksBufferFillIndex * 2)
             }
